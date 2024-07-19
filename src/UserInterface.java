@@ -19,6 +19,8 @@ class UserInterface extends JPanel implements MouseListener, MouseMotionListener
 
         g.setColor(new Color(190, 0, 190));
         g.fillRect(40, 20, 80, 50);
+
+        g.drawString("Hello World", x, y);
     }
 
     public void mouseMoved(MouseEvent e) {
