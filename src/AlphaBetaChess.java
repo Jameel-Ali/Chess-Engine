@@ -84,8 +84,67 @@ public class AlphaBetaChess {
     }
 
     public static String possibleR(int i) {
-        String list = "";
-        // Implement rook move logic here
+        String list = "", oldPiece;
+        int r = i / 8, c = i % 8;
+        int temp = 1;
+        
+        for (int j = -1 ; j <= 1 ; j+=2){
+            try {
+                while (" ".equals(chessBoard[r][c+temp*j])) {
+                    oldPiece = chessBoard[r][c+temp*j];
+                    chessBoard[r][c] = " ";
+                    chessBoard[r][c+temp*j] = "R";
+                    if (kingSafe()){
+                        list = list + r + c + r + (c+temp*j) + oldPiece;
+                    }
+
+                    chessBoard[r][c] = "R";
+                    chessBoard[r][c+temp*j] = oldPiece;
+                    temp++;
+                }
+
+                if(Character.isLowerCase(chessBoard[r][c+temp*j].charAt(0))){
+                    oldPiece = chessBoard[r][c+temp*j];
+                    chessBoard[r][c] = " ";
+                    chessBoard[r][c+temp*j] = "R";
+                    if (kingSafe()){
+                        list = list + r + c + r + (c+temp*j) + oldPiece;
+                    }
+
+                    chessBoard[r][c] = "R";
+                    chessBoard[r][c+temp*j] = oldPiece;
+                }
+            } catch (Exception e) {}
+            
+            temp=1;
+            
+            try {
+                while(" ".equals(chessBoard[r+temp*j][c]))
+                {
+                    oldPiece=chessBoard[r+temp*j][c];
+                    chessBoard[r][c]=" ";
+                    chessBoard[r+temp*j][c]="R";
+                    if (kingSafe()) {
+                        list=list+r+c+r+(c+temp*j)+oldPiece;
+                    }
+                    chessBoard[r][c]="R";
+                    chessBoard[r+temp*j][c]=oldPiece;
+                    temp++;
+                }
+                if (Character.isLowerCase(chessBoard[r+temp*j][c].charAt(0))) {
+                    oldPiece=chessBoard[r+temp*j][c];
+                    chessBoard[r][c]=" ";
+                    chessBoard[r+temp*j][c]="R";
+                    if (kingSafe()) {
+                        list=list+r+c+r+(c+temp*j)+oldPiece;
+                    }
+                    chessBoard[r][c]="R";
+                    chessBoard[r+temp*j][c]=oldPiece;
+                }
+            } catch (Exception e) {}
+
+        }
+
         return list;
     }
 
@@ -104,17 +163,64 @@ public class AlphaBetaChess {
         for (int j = -1 ; j <= 1 ; j++){
             
             for (int k = -1 ; k <= 1 ; k++){
+                if (j != 0 || k != 0){
+                    try {
+                        while (" ".equals(chessBoard[r+temp*j][c+temp*k]) ) {
+                            oldPiece = chessBoard[r+temp*j][c+temp*k];
+                            chessBoard[r][c] = " ";
+                            chessBoard[r+temp*j][c+temp*k] = "Q";
+
+                            if (kingSafe()){
+                                list = list + r + c + (r+temp*j) + (c+temp*k) + oldPiece;
+                            }
+
+                            chessBoard[r][c] = "Q";
+                            chessBoard[r+temp*j][c+temp*k] = oldPiece;
+                            temp++;
+                        }
+
+                        if (Character.isLowerCase(chessBoard[r+temp*j][c+temp*k].charAt(0))){
+                            oldPiece = chessBoard[r+temp*j][c+temp*k];
+                            chessBoard[r][c] = " ";
+                            chessBoard[r+temp*j][c+temp*k] = "Q";
+
+                            if (kingSafe()){
+                                list = list + r + c + (r+temp*j) + (c+temp*k) + oldPiece;
+                            }
+
+                            chessBoard[r][c] = "Q";
+                            chessBoard[r+temp*j][c+temp*k] = oldPiece;
+                        }
+
+                    } catch (Exception e) {}
+                    temp = 1;
+                }
+            }    
+        }
+        
+        return list;
+    }
+
+    public static String possibleB(int i) {
+        String list = "", oldPiece;
+
+        int r = i / 8, c = i % 8;
+
+        int temp = 1;
+        for (int j = -1 ; j <= 1 ; j+=2){
+            
+            for (int k = -1 ; k <= 1 ; k+=2){
                 try {
                     while (" ".equals(chessBoard[r+temp*j][c+temp*k]) ) {
                         oldPiece = chessBoard[r+temp*j][c+temp*k];
                         chessBoard[r][c] = " ";
-                        chessBoard[r+temp*j][c+temp*k] = "Q";
+                        chessBoard[r+temp*j][c+temp*k] = "B";
 
                         if (kingSafe()){
                             list = list + r + c + (r+temp*j) + (c+temp*k) + oldPiece;
                         }
 
-                        chessBoard[r][c] = "Q";
+                        chessBoard[r][c] = "B";
                         chessBoard[r+temp*j][c+temp*k] = oldPiece;
                         temp++;
                     }
@@ -122,13 +228,13 @@ public class AlphaBetaChess {
                     if (Character.isLowerCase(chessBoard[r+temp*j][c+temp*k].charAt(0))){
                         oldPiece = chessBoard[r+temp*j][c+temp*k];
                         chessBoard[r][c] = " ";
-                        chessBoard[r+temp*j][c+temp*k] = "Q";
+                        chessBoard[r+temp*j][c+temp*k] = "B";
 
                         if (kingSafe()){
                             list = list + r + c + (r+temp*j) + (c+temp*k) + oldPiece;
                         }
 
-                        chessBoard[r][c] = "Q";
+                        chessBoard[r][c] = "B";
                         chessBoard[r+temp*j][c+temp*k] = oldPiece;
                     }
 
@@ -138,12 +244,6 @@ public class AlphaBetaChess {
             }    
         }
         
-        return list;
-    }
-
-    public static String possibleB(int i) {
-        String list = "";
-        // Implement bishop move logic here
         return list;
     }
 
