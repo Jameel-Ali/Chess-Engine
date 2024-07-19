@@ -17,7 +17,7 @@ public class AlphaBetaChess {
     static String chessBoard[][] = { // Using an array instead of a bit board for simplicity
             {"r", "k", "b", "q", "a", "b", "k", "r"},
             {"p", "p", "p", "p", "p", "p", "p", "p"},
-            {"K", " ", " ", " ", " ", " ", " ", " "},
+            {" ", " ", " ", " ", " ", " ", " ", " "},
             {" ", " ", " ", " ", " ", " ", " ", " "},
             {" ", " ", " ", " ", " ", " ", " ", " "},
             {" ", " ", " ", " ", " ", " ", " ", " "},
@@ -150,45 +150,33 @@ public class AlphaBetaChess {
 
     public static String possibleK(int i) {
         String list = "", oldPiece;
-
         int r = i / 8, c = i % 8;
-
-        for (int j = -1 ; j <= 1 ; j+=2){
-            for (int k = -1 ; k <= 1 ; k+=2){
-                try {
-                    if(Character.isLowerCase(chessBoard[r+j][c+k*2].charAt(0)) || " ".equals(chessBoard[r+j][c+k*2]) ) {
-                        oldPiece = chessBoard[r+j][c+k*2];
-                        chessBoard[r][c] = " ";
-                        if (kingSafe()){
-                            list = list + r + c + r + (r+j) + (c+k*2) + oldPiece;
-                        }
-
-                        chessBoard[r][c] = "K";
-                        chessBoard[r+j][c+k*2] = oldPiece;
+        int[][] moves = {
+            {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+            {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+        };
+    
+        for (int[] move : moves) {
+            int newRow = r + move[0];
+            int newCol = c + move[1];
+            try {
+                if (" ".equals(chessBoard[newRow][newCol]) || Character.isLowerCase(chessBoard[newRow][newCol].charAt(0))) {
+                    oldPiece = chessBoard[newRow][newCol];
+                    chessBoard[r][c] = " ";
+                    chessBoard[newRow][newCol] = "K";
+                    if (kingSafe()) {
+                        list += r + c + newRow + newCol + oldPiece;
                     }
-                } catch(Exception e){}
-
-                try {
-                    if(Character.isLowerCase(chessBoard[r+j*2][c+k].charAt(0)) || " ".equals(chessBoard[r+j*2][c+k]) ) {
-                        oldPiece = chessBoard[r+j*2][c+k];
-                        chessBoard[r][c] = " ";
-                        if (kingSafe()){
-                            list = list + r + c + r + (r+j) + (c+k*2) + oldPiece;
-                        }
-
-                        chessBoard[r][c] = "K";
-                        chessBoard[r+j*2][c+k] = oldPiece;
-                    }
-                } catch(Exception e){}
-
+                    chessBoard[r][c] = "K";
+                    chessBoard[newRow][newCol] = oldPiece;
+                }
+            } catch (Exception e) {
+                // Ignore out-of-bounds exceptions
             }
         }
-
-
-
         return list;
     }
-
+        
     public static String possibleQ(int i) {
         String list = "", oldPiece;
 
