@@ -49,9 +49,11 @@ public class AlphaBetaChess {
         f.setVisible(true); // Sets visibility of window as true
         */
        
-        //makeMove("7657 ");
-        //undoMove("7657 ");
         System.out.println(possibleMoves());
+        System.out.println(alphaBeta(globalDepth, 1000000, -1000000, "", 0));
+
+        makeMove("7655 ");
+        undoMove("7655 ");
 
         for (int i = 0  ; i < 8 ; i++){
             System.out.println(Arrays.toString(chessBoard[i]));
@@ -60,10 +62,22 @@ public class AlphaBetaChess {
 
     public static String alphaBeta(int depth, int alpha, int beta, String move, int player){
         // return in form of 1234b#######
-        String list = possibleMoves();
+        // String list = possibleMoves();
+        String list = "1";
         if (depth == 0 || list.length() == 0){
-            return move + (rating() * (player * 2 -1));
+            return move + (rating()); // * (player * 2 -1)
         }
+
+        list = "";
+        System.out.print("How many moves are there: ");
+        Scanner sc = new Scanner(System.in);
+        int temp = sc.nextInt();
+
+
+        for (int i = 0 ; i < temp ; i++){
+            list += "1111b";
+        }
+
 
         // search moves from best to worst for efficiency
 
@@ -512,7 +526,9 @@ public class AlphaBetaChess {
     }
 
     public static int rating(){
-        return 0;
+        System.out.print("What is the score: ");
+        Scanner sc = new Scanner(System.in);
+        return sc.nextInt();
     }
 
     public static boolean kingSafe() {
