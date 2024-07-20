@@ -47,7 +47,7 @@ public class AlphaBetaChess {
 
         f.setSize(500, 500); // Creates window 500x500 pixels
         f.setVisible(true); // Sets visibility of window as true
-
+        
        
         makeMove("7657 ");
         undoMove("7657 ");
