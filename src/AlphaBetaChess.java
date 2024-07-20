@@ -1,4 +1,5 @@
 import javax.swing.*; // Provides added functionality
+import java.util.*;;
 
 public class AlphaBetaChess {
     /**
@@ -46,9 +47,43 @@ public class AlphaBetaChess {
         f.setSize(500, 500); // Creates window 500x500 pixels
         f.setVisible(true); // Sets visibility of window as true
         */
-
+       
+        /** 
+        makeMove("7655 ");
+        undoMove("7655 ");
         System.out.println(possibleMoves());
+
+        for (int i = 0  ; i < 8 ; i++){
+            System.out.println(Arrays.toString(chessBoard[i]));
+        }
+        */
     }
+
+
+    public static void makeMove(String move){
+        if (move.charAt(4) != 'P'){
+            // Regular moves
+            chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))] = chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))];    // Destination
+            chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))] = " ";   // Left position
+        }
+        else {
+            // Pawn promotion
+            chessBoard[1][Character.getNumericValue(move.charAt(0))] = " ";
+            chessBoard[0][Character.getNumericValue(move.charAt(1))] = String.valueOf(move.charAt(3));
+        }
+    }
+
+    public static void undoMove(String move){
+        if (move.charAt(4) != 'P'){
+            chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))] = chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))];    // Destination
+            chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(4))] = " ";   // Left position
+        }
+        else {
+            chessBoard[1][Character.getNumericValue(move.charAt(0))] = "p";
+            chessBoard[0][Character.getNumericValue(move.charAt(1))] = String.valueOf(move.charAt(2));
+        }
+    }
+
 
     /**
      * What moves are possible with respect to starting position of pawn
