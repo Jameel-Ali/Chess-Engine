@@ -48,15 +48,13 @@ public class AlphaBetaChess {
         f.setVisible(true); // Sets visibility of window as true
         */
        
-        /** 
-        makeMove("7655 ");
-        undoMove("7655 ");
+        //makeMove("7655 ");
+        //undoMove("7655 ");
         System.out.println(possibleMoves());
 
-        for (int i = 0  ; i < 8 ; i++){
-            System.out.println(Arrays.toString(chessBoard[i]));
-        }
-        */
+        //for (int i = 0  ; i < 8 ; i++){
+        //    System.out.println(Arrays.toString(chessBoard[i]));
+        // }
     }
 
 
@@ -292,27 +290,38 @@ public class AlphaBetaChess {
     public static String possibleK(int i) {
         String list = "", oldPiece;
         int r = i / 8, c = i % 8;
-        int[][] moves = {
-            {2, 1}, {2, -1}, {-2, 1}, {-2, -1},
-            {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
-        };
-    
-        for (int[] move : moves) {
-            int newRow = r + move[0];
-            int newCol = c + move[1];
-            try {
-                if (" ".equals(chessBoard[newRow][newCol]) || Character.isLowerCase(chessBoard[newRow][newCol].charAt(0))) {
-                    oldPiece = chessBoard[newRow][newCol];
-                    chessBoard[r][c] = " ";
-                    chessBoard[newRow][newCol] = "K";
-                    if (kingSafe()) {
-                        list += r + c + newRow + newCol + oldPiece;
+
+        for (int j = -1; j <= 1; j += 2) {
+            for (int k = -1; k <= 1; k += 2) {
+                try {
+                    if (Character.isLowerCase(chessBoard[r + j][c + k * 2].charAt(0)) || " ".equals(chessBoard[r + j][c + k * 2])) {
+                        oldPiece = chessBoard[r + j][c + k * 2];
+                        chessBoard[r][c] = " ";
+                        chessBoard[r + j][c + k * 2] = "K";
+                        if (kingSafe()) {
+                            list = list + r + c + (r + j) + (c + k * 2) + oldPiece;
+                        }
+
+                        chessBoard[r][c] = "K";
+                        chessBoard[r + j][c + k * 2] = oldPiece;
                     }
-                    chessBoard[r][c] = "K";
-                    chessBoard[newRow][newCol] = oldPiece;
+                } catch (Exception e) {
                 }
-            } catch (Exception e) {
-                // Ignore out-of-bounds exceptions
+
+                try {
+                    if (Character.isLowerCase(chessBoard[r + j * 2][c + k].charAt(0)) || " ".equals(chessBoard[r + j * 2][c + k])) {
+                        oldPiece = chessBoard[r + j * 2][c + k];
+                        chessBoard[r][c] = " ";
+                        chessBoard[r + j * 2][c + k] = "K";
+                        if (kingSafe()) {
+                            list = list + r + c + (r + j * 2) + (c + k) + oldPiece;
+                        }
+
+                        chessBoard[r][c] = "K";
+                        chessBoard[r + j * 2][c + k] = oldPiece;
+                    }
+                } catch (Exception e) {
+                }
             }
         }
         return list;
