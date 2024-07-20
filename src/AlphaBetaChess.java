@@ -27,6 +27,7 @@ public class AlphaBetaChess {
     };
 
     static int kingPositionC, kingPositionL; // Capital and Lowercase (WHITE and black)
+    static int globalDepth = 4;
 
     public static void main(String[] args) {
         while(!"A".equals(chessBoard[kingPositionC/8][kingPositionC%8])){
@@ -69,14 +70,52 @@ public class AlphaBetaChess {
         player = 1 - player;        // Either 1 or 0
 
         for (int i  = 0 ; i < list.length() ; i+=5){
-            list.substring(i, i+5);
+            makeMove(list.substring(i, i+5));
+            flipBoard();
+            String returnString = alphaBeta(depth -1, alpha, beta, list.substring(i, i+5), player);     // recursive call
+            int value = Integer.valueOf(returnString.substring(5));
+            flipBoard();
+            undoMove(list.substring(i, i+5));
+
+            if (player == 0){
+                if (value <= beta){
+                    beta = value;
+                    if (depth == globalDepth) {
+                         move = returnString.substring(0,5);
+                    }
+                }
+            }
+            else{
+                if (value > alpha){
+                    alpha = value;
+                    if (depth == globalDepth) {
+                         move = returnString.substring(0,5);
+                    }
+                }
+            }
         }
 
-        return " ";
+        if (alpha >= beta) {
+            if (player == 0){
+                return move + beta;
+            }
+            else{
+                return move + alpha;
+            }
+        }
+
+        if (player == 0){
+            return move + beta;
+        }
+        else{   
+            return move + alpha;
+        }
     }
 
 
+    public static void flipBoard(){         // flips board upside down
 
+    }
 
 
     public static void makeMove(String move){
