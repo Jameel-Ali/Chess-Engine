@@ -28,6 +28,14 @@ public class AlphaBetaChess {
     static int kingPositionC, kingPositionL; // Capital and Lowercase (WHITE and black)
 
     public static void main(String[] args) {
+        while(!"A".equals(chessBoard[kingPositionC/8][kingPositionC%8])){
+            kingPositionC++;    // White king location
+        }
+        while(!"a".equals(chessBoard[kingPositionL/8][kingPositionL%8])){
+            kingPositionL++;    // Black king location
+        }
+
+
         /*
         JFrame f = new JFrame("Chess"); // Name of window
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // When click exit button then close
@@ -304,6 +312,49 @@ public class AlphaBetaChess {
     }
 
     public static boolean kingSafe() {
+        // bishop/queen : going to look for if opposing bishop/queen is threatening king
+        // bishop chosen first for efficiency
+        int temp = 1;
+        for (int i = -1 ; i <= 1 ; i+=2){
+            for (int j = -1 ; j <= 1 ; j+=2){
+                try {
+                    while (" ".equals(chessBoard[kingPositionC / 8 + temp * i][kingPositionC % 8 + temp * j])) {
+                    temp++;
+                    }
+                    if ("b".equals(chessBoard[kingPositionC / 8 + temp * i][kingPositionC % 8 + temp * j]) || "q".equals(chessBoard[kingPositionC / 8 + temp * i][kingPositionC % 8 + temp * j])){
+                        // king is in danger
+                        return false;
+                    }
+                } catch (Exception e) {}
+                temp = 1;
+            }
+        }
+
+        // rook/queen : 
+        for (int i = -1 ; i <= 1 ; i+=2){
+            try {
+                while (" ".equals(chessBoard[kingPositionC / 8][kingPositionC % 8 + temp * i])) {
+                temp++;
+                }
+                if ("r".equals(chessBoard[kingPositionC / 8][kingPositionC % 8 + temp * i]) || "q".equals(chessBoard[kingPositionC / 8][kingPositionC % 8 + temp * i])){
+                    // king is in danger
+                    return false;
+                }
+            } catch (Exception e) {}
+            temp = 1;
+
+            try {
+                while (" ".equals(chessBoard[kingPositionC / 8 + temp * i][kingPositionC % 8])) {
+                temp++;
+                }
+                if ("r".equals(chessBoard[kingPositionC / 8 + temp * i][kingPositionC % 8]) || "q".equals(chessBoard[kingPositionC / 8 + temp * i][kingPositionC % 8])){
+                    // king is in danger
+                    return false;
+                }
+            } catch (Exception e) {}
+            temp = 1;
+        }
+
         return true;
     }
 }
