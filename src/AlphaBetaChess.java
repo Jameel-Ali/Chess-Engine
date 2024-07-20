@@ -374,9 +374,36 @@ public class AlphaBetaChess {
             }
         }
 
+        // Pawn
+        if (kingPositionC >= 16){
+            try {
+                if ("p".equals(chessBoard[kingPositionC / 8 - 1][kingPositionC % 8 - 1])){
+                    // king is in danger
+                    return false;
+                }
+            } catch (Exception e) {}
 
+            try {
+                if ("p".equals(chessBoard[kingPositionC / 8 - 1][kingPositionC % 8 + 1])){
+                    // king is in danger
+                    return false;
+                }
+            } catch (Exception e) {}
 
-        
+            // King
+            for (int i = -1 ; i <= 1 ; i++){
+                for (int j = -1 ; j <= 1 ; j++){
+                    if (i != 0 || j != 0){        
+                        try {
+                            if ("a".equals(chessBoard[kingPositionC / 8 + i][kingPositionC % 8 + j])){
+                                // king is in danger
+                                return false;
+                            }
+                        } catch (Exception e) {}    
+                    }
+                }
+            }    
+        }
         return true;
     }
 }
