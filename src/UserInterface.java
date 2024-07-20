@@ -9,6 +9,8 @@ class UserInterface extends JPanel implements MouseListener, MouseMotionListener
     static int x = 0, y = 0; // Global variables
     private Image chessPieceImage; // Image variable
 
+    static int squareSize = 32;
+
     public UserInterface() {
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -38,6 +40,7 @@ class UserInterface extends JPanel implements MouseListener, MouseMotionListener
         super.paintComponent(g);
         this.setBackground(Color.YELLOW);
 
+        /**
         g.setColor(Color.BLUE);
         g.fillRect(x - 20, y - 20, 40, 40);
 
@@ -51,6 +54,15 @@ class UserInterface extends JPanel implements MouseListener, MouseMotionListener
             g.drawImage(chessPieceImage, x, y, x+64, y+64, 0, 0, 64, 64, this);
         } else {
             System.out.println("chessPieceImage is null");
+        }
+        */
+
+        for (int i=0;i<64;i+=2) {
+            g.setColor(new Color(255,200,100));
+            g.fillRect((i%8+(i/8)%2)*squareSize, (i/8)*squareSize, squareSize, squareSize);
+            
+            g.setColor(new Color(150,50,30));
+            g.fillRect(((i+1)%8-((i+1)/8)%2)*squareSize, ((i+1)/8)*squareSize, squareSize, squareSize);
         }
     }
 
