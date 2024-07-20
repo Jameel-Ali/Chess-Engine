@@ -49,95 +49,113 @@ public class AlphaBetaChess {
         f.setVisible(true); // Sets visibility of window as true
         */
        
-        //makeMove("7657 ");
-        //undoMove("7657 ");
+        makeMove("7657 ");
+        undoMove("7657 ");
         System.out.println(possibleMoves());
+        makeMove(alphaBeta(globalDepth, 1000000, -1000000, "", 0));
+
 
         for (int i = 0  ; i < 8 ; i++){
             System.out.println(Arrays.toString(chessBoard[i]));
         }
     }
 
-    public static String alphaBeta(int depth, int alpha, int beta, String move, int player){
-        // return in form of 1234b#######
+    public static String alphaBeta(int depth, int beta, int alpha, String move, int player) {
+        // Return in form of 1234b##########
         String list = possibleMoves();
-        if (depth == 0 || list.length() == 0){
-            return move + (rating() * (player * 2 -1));
+        if (depth == 0 || list.length() == 0) {
+            return move + (rating() * (player * 2 - 1));
         }
-
-        // search moves from best to worst for efficiency
-
-        player = 1 - player;        // Either 1 or 0
-
-        for (int i  = 0 ; i < list.length() ; i+=5){
-            makeMove(list.substring(i, i+5));
+    
+        // Switch player
+        player = 1 - player; // Either 1 or 0
+    
+        // Loop through possible moves
+        for (int i = 0; i < list.length(); i += 5) {
+            makeMove(list.substring(i, i + 5));
             flipBoard();
-            String returnString = alphaBeta(depth -1, alpha, beta, list.substring(i, i+5), player);     // recursive call
+            
+            // Recursive call
+            String returnString = alphaBeta(depth - 1, beta, alpha, list.substring(i, i + 5), player);
             int value = Integer.valueOf(returnString.substring(5));
+            
             flipBoard();
-            undoMove(list.substring(i, i+5));
-
-            if (player == 0){
-                if (value <= beta){
+            undoMove(list.substring(i, i + 5));
+    
+            if (player == 0) {
+                if (value <= beta) {
                     beta = value;
                     if (depth == globalDepth) {
-                         move = returnString.substring(0,5);
+                        move = returnString.substring(0, 5);
                     }
                 }
-            }
-            else{
-                if (value > alpha){
+            } else {
+                if (value > alpha) {
                     alpha = value;
                     if (depth == globalDepth) {
-                         move = returnString.substring(0,5);
+                        move = returnString.substring(0, 5);
                     }
                 }
             }
-        }
-
-        if (alpha >= beta) {
-            if (player == 0){
-                return move + beta;
-            }
-            else{
-                return move + alpha;
+    
+            // Beta cutoff
+            if (alpha >= beta) {
+                return move + (player == 0 ? beta : alpha);
             }
         }
-
-        if (player == 0){
-            return move + beta;
-        }
-        else{   
-            return move + alpha;
-        }
+    
+        // Return best value for this depth
+        return move + (player == 0 ? beta : alpha);
     }
-
+    
 
     public static void flipBoard(){         // flips board upside down
-
+        String temp;
+        for (int i=0;i<32;i++) {
+            int r=i/8, c=i%8;
+            if (Character.isUpperCase(chessBoard[r][c].charAt(0))) {
+                temp=chessBoard[r][c].toLowerCase();
+            } else {
+                temp=chessBoard[r][c].toUpperCase();
+            }
+            if (Character.isUpperCase(chessBoard[7-r][7-c].charAt(0))) {
+                chessBoard[r][c]=chessBoard[7-r][7-c].toLowerCase();
+            } else {
+                chessBoard[r][c]=chessBoard[7-r][7-c].toUpperCase();
+            }
+            chessBoard[7-r][7-c]=temp;
+        }
+        int kingTemp=kingPositionC;
+        kingPositionC=63-kingPositionL;
+        kingPositionL=63-kingTemp;
     }
 
 
-    public static void makeMove(String move){
-        if (move.charAt(4) != 'P'){
-            // Regular moves
-            chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))] = chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))];    // Destination
-            chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))] = " ";   // Left position
-        }
-        else {
-            // Pawn promotion
-            chessBoard[1][Character.getNumericValue(move.charAt(0))] = " ";
-            chessBoard[0][Character.getNumericValue(move.charAt(1))] = String.valueOf(move.charAt(3));
-        }
-    }
-
-    public static void undoMove(String move) {
-        if (move.charAt(4) != 'P') {
-            chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))] = chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))];    // Destination
-            chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))] = String.valueOf(move.charAt(4));   // Left position
+    public static void makeMove(String move) {
+        if (move.charAt(4)!='P') {
+            chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))]=chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))];
+            chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))]=" ";
+            if ("A".equals(chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))])) {
+                kingPositionC=8*Character.getNumericValue(move.charAt(2))+Character.getNumericValue(move.charAt(3));
+            }
         } else {
-            chessBoard[1][Character.getNumericValue(move.charAt(0))] = "P";
-            chessBoard[0][Character.getNumericValue(move.charAt(1))] = String.valueOf(move.charAt(2));
+            //if pawn promotion
+            chessBoard[1][Character.getNumericValue(move.charAt(0))]=" ";
+            chessBoard[0][Character.getNumericValue(move.charAt(1))]=String.valueOf(move.charAt(3));
+        }
+    }
+    
+    public static void undoMove(String move) {
+        if (move.charAt(4)!='P') {
+            chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))]=chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))];
+            chessBoard[Character.getNumericValue(move.charAt(2))][Character.getNumericValue(move.charAt(3))]=String.valueOf(move.charAt(4));
+            if ("A".equals(chessBoard[Character.getNumericValue(move.charAt(0))][Character.getNumericValue(move.charAt(1))])) {
+                kingPositionC=8*Character.getNumericValue(move.charAt(0))+Character.getNumericValue(move.charAt(1));
+            }
+        } else {
+            //if pawn promotion
+            chessBoard[1][Character.getNumericValue(move.charAt(0))]="P";
+            chessBoard[0][Character.getNumericValue(move.charAt(1))]=String.valueOf(move.charAt(2));
         }
     }
 
