@@ -355,6 +355,28 @@ public class AlphaBetaChess {
             temp = 1;
         }
 
+        // Knight
+        for (int i = -1 ; i <= 1 ; i+=2){
+            for (int j = -1 ; j <= 1 ; j+=2){
+                try {
+                    if ("k".equals(chessBoard[kingPositionC / 8 + i][kingPositionC % 8 + j * 2])){
+                        // king is in danger
+                        return false;
+                    }
+                } catch (Exception e) {}
+
+                try {
+                    if ("k".equals(chessBoard[kingPositionC / 8 + i * 2][kingPositionC % 8 + j])){
+                        // king is in danger
+                        return false;
+                    }
+                } catch (Exception e) {}
+            }
+        }
+
+
+
+        
         return true;
     }
 }
