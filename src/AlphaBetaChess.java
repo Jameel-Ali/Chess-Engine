@@ -131,6 +131,61 @@ public class AlphaBetaChess {
 
         }
 
+
+        // Move 1 up
+        try {
+            if (" ".equals(chessBoard[r-1][c]) && i >= 16){
+                oldPiece = chessBoard[r-1][c];
+                chessBoard[r][c] = " ";
+                chessBoard[r-1][c] = "P";
+                if (kingSafe()){
+                    list = list + r + c + (r-1) + c + oldPiece;
+                }
+
+                chessBoard[r][c] = "P";
+                chessBoard[r-1][c] = oldPiece;
+
+            }
+        } catch (Exception e){}
+
+        // Promotion and no capture
+        try {
+            if (" ".equals(chessBoard[r-1][c]) && i < 16){
+                String[] temp = {"Q","R","B","K"};
+
+                for (int k = 0 ; k < 4 ; k++){
+                    oldPiece = chessBoard[r-1][c];
+                    chessBoard[r][c] = " ";
+                    chessBoard[r-1][c] = temp[k];
+                    if (kingSafe()){
+                        // Column1, Column2, Captured-Piece, New Piece, P
+                        list = list + c + c + oldPiece + temp[k] + "P";
+                    }
+
+                    chessBoard[r][c] = "P";
+                    chessBoard[r-1][c] = oldPiece;    
+                }
+            }
+        } catch (Exception e){}
+
+        // Move 2 up
+        try {
+            if (" ".equals(chessBoard[r-1][c]) && " ".equals(chessBoard[r-2][c]) && i >= 48){
+                oldPiece = chessBoard[r-2][c];
+                chessBoard[r][c] = " ";
+                chessBoard[r-2][c] = "P";
+                if (kingSafe()){
+                    list = list + r + c + (r-2) + c + oldPiece;
+                }
+
+                chessBoard[r][c] = "P";
+                chessBoard[r-2][c] = oldPiece;
+
+            }
+        } catch (Exception e){}
+
+
+
         return list;
     }
 
