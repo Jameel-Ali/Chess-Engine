@@ -57,6 +57,27 @@ public class AlphaBetaChess {
         }
     }
 
+    public static String alphaBeta(int depth, int alpha, int beta, String move, int player){
+        // return in form of 1234b#######
+        String list = possibleMoves();
+        if (depth == 0 || list.length() == 0){
+            return move + (rating() * (player * 2 -1));
+        }
+
+        // search moves from best to worst for efficiency
+
+        player = 1 - player;        // Either 1 or 0
+
+        for (int i  = 0 ; i < list.length() ; i+=5){
+            list.substring(i, i+5);
+        }
+
+        return " ";
+    }
+
+
+
+
 
     public static void makeMove(String move){
         if (move.charAt(4) != 'P'){
@@ -449,6 +470,10 @@ public class AlphaBetaChess {
         }
         // need to add castling
         return list;
+    }
+
+    public static int rating(){
+        return 0;
     }
 
     public static boolean kingSafe() {
