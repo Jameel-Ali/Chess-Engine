@@ -86,8 +86,51 @@ public class AlphaBetaChess {
     }
 
     public static String possibleP(int i) {
-        String list = "";
-        // Implement pawn move logic here
+        String list = "", oldPiece;
+        int r = i / 8, c = i % 8;
+        
+        for (int j = -1 ; j <= 1 ; j+=2){
+            // Capture logic
+            try {
+                if (Character.isLowerCase(chessBoard[r-1][c+j].charAt(0)) && i >= 16){
+                    oldPiece = chessBoard[r-1][c+j];
+                    chessBoard[r][c] = " ";
+                    chessBoard[r-1][c+j] = "P";
+                    if (kingSafe()){
+                        list = list + r + c + (r-1) + (c+j) + oldPiece;
+                    }
+
+                    chessBoard[r][c] = "P";
+                    chessBoard[r-1][c+j] = oldPiece;
+
+                }
+            } catch (Exception e){}
+
+            // Capture and Promotion logic
+            try {
+                if (Character.isLowerCase(chessBoard[r-1][c+j].charAt(0)) && i < 16){
+                    String[] temp = {"Q","R","B","K"};
+
+                    for (int k = 0 ; k < 4 ; k++){
+                        oldPiece = chessBoard[r-1][c+j];
+                        chessBoard[r][c] = " ";
+                        chessBoard[r-1][c+j] = temp[k];
+                        if (kingSafe()){
+                            // Column1, Column2, Captured-Piece, New Piece, P
+                            list = list + c + (c+j) + oldPiece + temp[k] + "P";
+                        }
+    
+                        chessBoard[r][c] = "P";
+                        chessBoard[r-1][c+j] = oldPiece;    
+                    }
+
+
+
+                }
+            } catch (Exception e){}
+
+        }
+
         return list;
     }
 
