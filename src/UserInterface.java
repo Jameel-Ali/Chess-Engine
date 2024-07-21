@@ -1,71 +1,46 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 public class UserInterface extends JPanel implements MouseListener, MouseMotionListener {
-    static int x = 0, y = 0;
+        
+    static int mouseX, mouseY, newMouseX, newMouseY;
+
+    // Size of each square on the chessboard
     static int squareSize = 32;
-    private Image chessPiecesImage;
-
-    public UserInterface() {
-        this.addMouseListener(this);
-        this.addMouseMotionListener(this);
-        loadChessPiecesImage(); // Load the image once
-    }
-
-    private void loadChessPiecesImage() {
-        try {
-            // Adjust the path if necessary
-            File imageFile = new File("ChessPieces.png");
-            chessPiecesImage = ImageIO.read(imageFile);
-
-            if (chessPiecesImage == null) {
-                System.out.println("Image not loaded properly!");
-            } else {
-                System.out.println("Image loaded successfully!");
-                System.out.println("Image dimensions: " + chessPiecesImage.getWidth(this) + "x" + chessPiecesImage.getHeight(this));
-            }
-        } catch (IOException e) {
-            System.out.println("Image not found or unable to load!");
-            e.printStackTrace();
-        }
-
-        // Print the current working directory for debugging purposes
-        System.out.println("Current working directory: " + System.getProperty("user.dir"));
-    }
-
+    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        this.setBackground(Color.yellow);
-
+        
+        // Set the background color
+        this.setBackground(Color.white);
+        
+        // Add mouse listeners
+        this.addMouseListener(this);
+        this.addMouseMotionListener(this);
+        
         // Draw the chessboard
-        for (int i = 0; i < 64; i++) {
-            int xPos = (i % 8) * squareSize;
-            int yPos = (i / 8) * squareSize;
-            if ((i / 8) % 2 == 0) {
-                g.setColor(i % 2 == 0 ? new Color(255, 200, 100) : new Color(150, 50, 30));
-            } else {
-                g.setColor(i % 2 == 0 ? new Color(150, 50, 30) : new Color(255, 200, 100));
-            }
-            g.fillRect(xPos, yPos, squareSize, squareSize);
+        for (int i = 0; i < 64; i += 2) {
+            // Draw light square
+            g.setColor(new Color(255, 200, 100));
+            g.fillRect((i % 8 + (i / 8) % 2) * squareSize, (i / 8) * squareSize, squareSize, squareSize);
+            
+            // Draw dark square
+            g.setColor(new Color(150, 50, 30));
+            g.fillRect(((i + 1) % 8 - ((i + 1) / 8) % 2) * squareSize, ((i + 1) / 8) * squareSize, squareSize, squareSize);
         }
-
-        // Draw the chess pieces
-        if (chessPiecesImage == null) {
-            System.out.println("Error: ChessPieces.png not loaded!");
-            return;
-        }
-
-        int pieceSize = 64; // Size of each piece in the image
+        
+        // Load the chess pieces image
+        Image chessPiecesImage;
+        chessPiecesImage = new ImageIcon("ChessPieces.png").getImage();
+        
+        // Draw the chess pieces on the board
         for (int i = 0; i < 64; i++) {
             int j = -1, k = -1;
-            String piece = AlphaBetaChess.chessBoard[i / 8][i % 8];
-
-            switch (piece) {
+            
+            // Determine the image coordinates for the chess piece
+            switch (AlphaBetaChess.chessBoard[i / 8][i % 8]) {
                 case "P": j = 5; k = 0; break;
                 case "p": j = 5; k = 1; break;
                 case "R": j = 2; k = 0; break;
@@ -79,34 +54,71 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
                 case "A": j = 0; k = 0; break;
                 case "a": j = 0; k = 1; break;
             }
-
+            
+            // Draw the chess piece if it exists
             if (j != -1 && k != -1) {
-                g.drawImage(chessPiecesImage, (i % 8) * squareSize, (i / 8) * squareSize,
+                g.drawImage(chessPiecesImage, 
+                            (i % 8) * squareSize, (i / 8) * squareSize, 
                             (i % 8 + 1) * squareSize, (i / 8 + 1) * squareSize,
-                            j * pieceSize, k * pieceSize, (j + 1) * pieceSize, (k + 1) * pieceSize, this);
+                            j * 64, k * 64, 
+                            (j + 1) * 64, (k + 1) * 64, 
+                            this);
             }
+        }
+        
+        // The following code is commented out and not currently in use
+        /*
+        g.setColor(Color.BLUE);
+        g.fillRect(x - 20, y - 20, 40, 40);
+        g.setColor(new Color(190, 81, 215));
+        g.fillRect(40, 20, 80, 50);
+        g.drawString("Jonathan", x, y);
+        */
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {}
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (e.getX() < 8*squareSize && e.getY() < 8*squareSize){
+            // inside board
+            mouseX = e.getX();
+            mouseY = e.getY();
+            repaint();
         }
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
-        x = e.getX();
-        y = e.getY();
-        repaint();
+    public void mouseReleased(MouseEvent e) {
+        if (e.getX() < 8*squareSize && e.getY() < 8*squareSize){
+            // inside board
+            newMouseX = e.getX();
+            newMouseY = e.getY();
+
+            if (e.getButton() == MouseEvent.BUTTON1){
+                String dragmove;
+                if (newMouseY / squareSize == 0 && mouseY / squareSize == 1 && "P".equals(AlphaBetaChess.chessBoard[mouseY/squareSize][mouseX/squareSize])){
+                    // pawn promotion
+                    dragmove = ""+mouseX/squareSize+newMouseX/squareSize+AlphaBetaChess.chessBoard[newMouseY/squareSize][newMouseX/squareSize]+"QP";
+                }
+                else{
+                    // regular move
+                    dragmove = ""+mouseY/squareSize+mouseX/squareSize+newMouseY/squareSize+newMouseX/squareSize+AlphaBetaChess.chessBoard[newMouseY/squareSize][newMouseX/squareSize];
+                }
+
+                String userPossibilities = AlphaBetaChess.possibleMoves();
+                if (userPossibilities.replaceAll(dragmove, "").length() < userPossibilities.length()){
+                    // if valid move
+                    AlphaBetaChess.makeMove(dragmove);
+                }       
+            }
+            repaint();
+        }
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {}
-
-    @Override
-    public void mouseReleased(MouseEvent e) {}
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        x = e.getX();
-        y = e.getY();
-        repaint();
-    }
+    public void mouseClicked(MouseEvent e) {}
 
     @Override
     public void mouseDragged(MouseEvent e) {}
@@ -116,12 +128,4 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mouseExited(MouseEvent e) {}
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Chess Game");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(256, 256); // Adjust size as needed
-        frame.add(new UserInterface());
-        frame.setVisible(true);
-    }
 }
