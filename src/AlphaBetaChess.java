@@ -154,7 +154,120 @@ public class AlphaBetaChess {
             chessBoard[1][Character.getNumericValue(move.charAt(0))]=" ";
             chessBoard[0][Character.getNumericValue(move.charAt(1))]=String.valueOf(move.charAt(3));
         }
+
+        if (isCheckmate()) {
+            UserInterface.showGameEndMessage("Checkmate! " + (humanAsWhite == 1 ? "Black" : "White") + " wins.");
+        } else if (isStalemate()) {
+            UserInterface.showGameEndMessage("Stalemate! The game is a draw.");
+        }
     }
+
+    public static boolean isCheckmate() {
+        String possibleMoves = possibleMoves();
+        return possibleMoves.length() == 0 && isKingInCheck();
+    }
+
+    public static boolean isStalemate() {
+        String possibleMoves = possibleMoves();
+        return possibleMoves.length() == 0 && !isKingInCheck();
+    }
+
+    public static boolean isKingInCheck() {
+        int kingPosition = (humanAsWhite == 1) ? kingPositionC : kingPositionL;
+        int kingRow = kingPosition / 8;
+        int kingCol = kingPosition % 8;
+    
+        return isThreatenedByPawn(kingRow, kingCol) ||
+               isThreatenedByKnight(kingRow, kingCol) ||
+               isThreatenedByBishopOrQueen(kingRow, kingCol) ||
+               isThreatenedByRookOrQueen(kingRow, kingCol) ||
+               isThreatenedByKing(kingRow, kingCol);
+    }
+    
+    private static boolean isThreatenedByPawn(int row, int col) {
+        int direction = (humanAsWhite == 1) ? -1 : 1;
+    
+        if (isValidPosition(row + direction, col - 1) && chessBoard[row + direction][col - 1].equals((humanAsWhite == 1) ? "p" : "P")) {
+            return true;
+        }
+        if (isValidPosition(row + direction, col + 1) && chessBoard[row + direction][col + 1].equals((humanAsWhite == 1) ? "p" : "P")) {
+            return true;
+        }
+        return false;
+    }
+    
+    private static boolean isThreatenedByKnight(int row, int col) {
+        int[] dRow = {-2, -1, 1, 2, 2, 1, -1, -2};
+        int[] dCol = {1, 2, 2, 1, -1, -2, -2, -1};
+    
+        for (int i = 0; i < 8; i++) {
+            if (isValidPosition(row + dRow[i], col + dCol[i]) && chessBoard[row + dRow[i]][col + dCol[i]].equals((humanAsWhite == 1) ? "k" : "K")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private static boolean isThreatenedByBishopOrQueen(int row, int col) {
+        int[] dRow = {-1, -1, 1, 1};
+        int[] dCol = {-1, 1, 1, -1};
+    
+        for (int i = 0; i < 4; i++) {
+            int currentRow = row;
+            int currentCol = col;
+            while (isValidPosition(currentRow + dRow[i], currentCol + dCol[i])) {
+                currentRow += dRow[i];
+                currentCol += dCol[i];
+                String piece = chessBoard[currentRow][currentCol];
+                if (piece.equals((humanAsWhite == 1) ? "b" : "B") || piece.equals((humanAsWhite == 1) ? "q" : "Q")) {
+                    return true;
+                }
+                if (!piece.equals(" ")) {
+                    break;
+                }
+            }
+        }
+        return false;
+    }
+    
+    private static boolean isThreatenedByRookOrQueen(int row, int col) {
+        int[] dRow = {-1, 1, 0, 0};
+        int[] dCol = {0, 0, -1, 1};
+    
+        for (int i = 0; i < 4; i++) {
+            int currentRow = row;
+            int currentCol = col;
+            while (isValidPosition(currentRow + dRow[i], currentCol + dCol[i])) {
+                currentRow += dRow[i];
+                currentCol += dCol[i];
+                String piece = chessBoard[currentRow][currentCol];
+                if (piece.equals((humanAsWhite == 1) ? "r" : "R") || piece.equals((humanAsWhite == 1) ? "q" : "Q")) {
+                    return true;
+                }
+                if (!piece.equals(" ")) {
+                    break;
+                }
+            }
+        }
+        return false;
+    }
+    
+    private static boolean isThreatenedByKing(int row, int col) {
+        int[] dRow = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] dCol = {-1, 0, 1, -1, 1, -1, 0, 1};
+    
+        for (int i = 0; i < 8; i++) {
+            if (isValidPosition(row + dRow[i], col + dCol[i]) && chessBoard[row + dRow[i]][col + dCol[i]].equals((humanAsWhite == 1) ? "a" : "A")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private static boolean isValidPosition(int row, int col) {
+        return row >= 0 && row < 8 && col >= 0 && col < 8;
+    }
+    
     
     public static void undoMove(String move) {
         if (move.charAt(4)!='P') {

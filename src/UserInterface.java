@@ -131,4 +131,8 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mouseExited(MouseEvent e) {}
+
+    public static void showGameEndMessage(String message) {
+        JOptionPane.showMessageDialog(null, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
+    }
 }
