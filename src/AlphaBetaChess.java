@@ -27,6 +27,7 @@ public class AlphaBetaChess {
     };
 
     static int kingPositionC, kingPositionL; // Capital and Lowercase (WHITE and black)
+    static int humanAsWhite = -1;   // 1 = human as white, 0 = human as black
     static int globalDepth = 4;
 
     public static void main(String[] args) {
@@ -52,8 +53,15 @@ public class AlphaBetaChess {
         makeMove("7657 ");
         undoMove("7657 ");
         System.out.println(possibleMoves());
-        makeMove(alphaBeta(globalDepth, 1000000, -1000000, "", 0));
 
+        Object[] option = {"Computer","Human"};
+        humanAsWhite = JOptionPane.showOptionDialog(null, "Who will play as white?", "ABC Options", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, option, option[1]);
+        if (humanAsWhite == 0){
+            makeMove(alphaBeta(globalDepth, 1000000, -1000000, "", 0));
+            flipBoard();
+            f.repaint();
+        }
+        
 
         for (int i = 0  ; i < 8 ; i++){
             System.out.println(Arrays.toString(chessBoard[i]));
