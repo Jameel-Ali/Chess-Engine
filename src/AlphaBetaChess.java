@@ -72,7 +72,7 @@ public class AlphaBetaChess {
         // Return in form of 1234b##########
         String list = possibleMoves();
         if (depth == 0 || list.length() == 0) {
-            return move + (rating() * (player * 2 - 1));
+            return move + (Rating.rating() * (player * 2 - 1));
         }
     
         // Switch player
@@ -535,10 +535,6 @@ public class AlphaBetaChess {
         }
         // need to add castling
         return list;
-    }
-
-    public static int rating(){
-        return 0;
     }
 
     public static boolean kingSafe() {
