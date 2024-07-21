@@ -75,6 +75,9 @@ public class AlphaBetaChess {
             return move + (Rating.rating(list.length(), depth) * (player * 2 - 1));
         }
     
+        list=sortMoves(list);
+
+
         // Switch player
         player = 1 - player; // Either 1 or 0
     
@@ -535,6 +538,26 @@ public class AlphaBetaChess {
         }
         // need to add castling
         return list;
+    }
+
+    public static String sortMoves(String list) {
+        int[] score=new int [list.length()/5];
+        for (int i=0;i<list.length();i+=5) {
+            makeMove(list.substring(i, i+5));
+            score[i/5]=-Rating.rating(-1, 0);
+            undoMove(list.substring(i, i+5));
+        }
+        String newListA="", newListB=list;
+        for (int i=0;i<Math.min(6, list.length()/5);i++) {//first few moves only
+            int max=-1000000, maxLocation=0;
+            for (int j=0;j<list.length()/5;j++) {
+                if (score[j]>max) {max=score[j]; maxLocation=j;}
+            }
+            score[maxLocation]=-1000000;
+            newListA+=list.substring(maxLocation*5,maxLocation*5+5);
+            newListB=newListB.replace(list.substring(maxLocation*5,maxLocation*5+5), "");
+        }
+        return newListA+newListB;
     }
 
     public static boolean kingSafe() {
