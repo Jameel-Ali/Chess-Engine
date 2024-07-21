@@ -1,5 +1,5 @@
 public class Rating {
-    // Static arrays for positional evaluation of pieces
+    // Static arrays for positional evaluation of pieces (look to balance it)
     static int pawnBoard[][] = {
         { 0,  0,  0,  0,  0,  0,  0,  0},
         {50, 50, 50, 50, 50, 50, 50, 50},
@@ -91,9 +91,50 @@ public class Rating {
         return -(counter + depth * 50);
     }
 
-    // Stub method for attack rating
+    // method for attack rating
     public static int rateAttack() {
-        return 0;
+        int counter = 0;
+        int tempPositionC = AlphaBetaChess.kingPositionC;
+        for (int i = 0; i < 64; i++) {
+            // Evaluate piece material value
+            switch (AlphaBetaChess.chessBoard[i / 8][i % 8]) {
+                case "P": {AlphaBetaChess.kingPositionC = i; 
+                    if (AlphaBetaChess.kingSafe()) {
+                    counter -= 64;
+                    }
+                }
+                break;   // Pawn
+                case "R":  {AlphaBetaChess.kingPositionC = i; 
+                    if (AlphaBetaChess.kingSafe()) {
+                    counter -= 500;
+                    }
+                }
+                break;   // Rook
+                case "K":  {AlphaBetaChess.kingPositionC = i; 
+                    if (AlphaBetaChess.kingSafe()) {
+                    counter -= 300;
+                    }
+                }
+                break;   // Knight
+                case "B":  {AlphaBetaChess.kingPositionC = i; 
+                    if (AlphaBetaChess.kingSafe()) {
+                    counter -= 300;
+                    }
+                }
+                break; // Bishop
+                case "Q":  {AlphaBetaChess.kingPositionC = i; 
+                    if (AlphaBetaChess.kingSafe()) {
+                    counter -= 900;
+                    }
+                }
+                break;   // Queen
+            }
+        }
+        AlphaBetaChess.kingPositionC = tempPositionC;
+        if (!AlphaBetaChess.kingSafe()){
+            counter -= 200;
+        }
+        return counter/2;
     }
 
     // Method to rate material balance on the board
