@@ -1,4 +1,5 @@
 # AlphaBetaChess Project
+<img src="images/game.png" alt="Game Screenshot" width="300">
 
 ## Overview
 **AlphaBetaChess** is a sophisticated Java-based chess game that utilises artificial intelligence algorithms to challenge players. The game is built using Java Swing for its graphical interface, making it both visually appealing and interactive. At its core, it employs the alpha-beta pruning algorithm, an optimization technique for the minimax algorithm, enhancing the AI's decision-making efficiency by ignoring less promising moves.
