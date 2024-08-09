@@ -8,6 +8,13 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
 
     // Size of each square on the chessboard
     static int squareSize = 32;
+
+    public static int choosePlayerColor() {
+        Object[] options = {"Black", "White"};
+        int choice = JOptionPane.showOptionDialog(null, "Choose your color", "Color Selection",
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        return choice;  // Returns 0 for White, 1 for Black
+    }    
     
     @Override
     public void paintComponent(Graphics g) {
@@ -40,21 +47,38 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             int j = -1, k = -1;
             
             // Determine the image coordinates for the chess piece
-            switch (AlphaBetaChess.chessBoard[i / 8][i % 8]) {
-                case "P": j = 5; k = 0; break;
-                case "p": j = 5; k = 1; break;
-                case "R": j = 2; k = 0; break;
-                case "r": j = 2; k = 1; break;
-                case "K": j = 4; k = 0; break;
-                case "k": j = 4; k = 1; break;
-                case "B": j = 3; k = 0; break;
-                case "b": j = 3; k = 1; break;
-                case "Q": j = 1; k = 0; break;
-                case "q": j = 1; k = 1; break;
-                case "A": j = 0; k = 0; break;
-                case "a": j = 0; k = 1; break;
+            if (AlphaBetaChess.humanAsWhite == 1) { // Player is playing as white
+                switch (AlphaBetaChess.chessBoard[i / 8][i % 8]) {
+                    case "P": j = 5; k = 0; break;
+                    case "p": j = 5; k = 1; break;
+                    case "R": j = 2; k = 0; break;
+                    case "r": j = 2; k = 1; break;
+                    case "K": j = 4; k = 0; break;
+                    case "k": j = 4; k = 1; break;
+                    case "B": j = 3; k = 0; break;
+                    case "b": j = 3; k = 1; break;
+                    case "Q": j = 1; k = 0; break;
+                    case "q": j = 1; k = 1; break;
+                    case "A": j = 0; k = 0; break;
+                    case "a": j = 0; k = 1; break;
+                }
+            } else { // Player is playing as black
+                switch (AlphaBetaChess.chessBoard[i / 8][i % 8]) {
+                    case "P": j = 5; k = 1; break;
+                    case "p": j = 5; k = 0; break;
+                    case "R": j = 2; k = 1; break;
+                    case "r": j = 2; k = 0; break;
+                    case "K": j = 4; k = 1; break;
+                    case "k": j = 4; k = 0; break;
+                    case "B": j = 3; k = 1; break;
+                    case "b": j = 3; k = 0; break;
+                    case "Q": j = 1; k = 1; break;
+                    case "q": j = 1; k = 0; break;
+                    case "A": j = 0; k = 1; break;
+                    case "a": j = 0; k = 0; break;
+                }
             }
-            
+                
             // Draw the chess piece if it exists
             if (j != -1 && k != -1) {
                 g.drawImage(chessPiecesImage, 
@@ -66,14 +90,6 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
             }
         }
         
-        // The following code is commented out and not currently in use
-        /*
-        g.setColor(Color.BLUE);
-        g.fillRect(x - 20, y - 20, 40, 40);
-        g.setColor(new Color(190, 81, 215));
-        g.fillRect(40, 20, 80, 50);
-        g.drawString("Jonathan", x, y);
-        */
     }
 
     @Override

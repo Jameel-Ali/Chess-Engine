@@ -16,14 +16,14 @@ public class AlphaBetaChess {
      * 1234b : row1,column2 moves to row3, column4 which captured b [space corresponds to no capture]
      */
     static String chessBoard[][] = { // Using an array instead of a bit board for simplicity
-            {"r", "k", "b", "q", "a", "b", "k", "r"},
-            {"p", "p", "p", "p", "p", "p", "p", "p"},
-            {" ", " ", " ", " ", " ", " ", " ", " "},
-            {" ", " ", " ", " ", " ", " ", " ", " "},
-            {" ", " ", " ", " ", " ", " ", " ", " "},
-            {" ", " ", " ", " ", " ", " ", " ", " "},
-            {"P", "P", "P", "P", "P", "P", "P", "P"},
-            {"R", "K", "B", "Q", "A", "B", "K", "R"}
+        {"r", "k", "b", "q", "a", "b", "k", "r"},
+        {"p", "p", "p", "p", "p", "p", "p", "p"},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {"P", "P", "P", "P", "P", "P", "P", "P"},
+        {"R", "K", "B", "Q", "A", "B", "K", "R"}
     };
 
     static int kingPositionC, kingPositionL; // Capital and Lowercase (WHITE and black)
@@ -31,39 +31,37 @@ public class AlphaBetaChess {
     static int globalDepth = 4;
 
     public static void main(String[] args) {
-        while(!"A".equals(chessBoard[kingPositionC/8][kingPositionC%8])){
-            kingPositionC++;    // White king location
-        }
-        while(!"a".equals(chessBoard[kingPositionL/8][kingPositionL%8])){
-            kingPositionL++;    // Black king location
-        }
-
-
-        
         JFrame f = new JFrame("Chess"); // Name of window
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // When click exit button then close
 
         UserInterface ui = new UserInterface();
         f.add(ui); // Calls ui to add it to window
-
-        f.setSize(500, 500); // Creates window 500x500 pixels
+        f.setSize(255, 284); // Creates window 500x500 pixels
         f.setVisible(true); // Sets visibility of window as true
+        f.setResizable(false);
         
-       
-        makeMove("7657 ");
-        undoMove("7657 ");
-        System.out.println(possibleMoves());
+       humanAsWhite = UserInterface.choosePlayerColor(); // Get player choice for playing as White or Black
 
-        Object[] option = {"Computer","Human"};
-        humanAsWhite = JOptionPane.showOptionDialog(null, "Who will play as white?", "ABC Options", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, option, option[1]);
-        if (humanAsWhite == 0){
-            makeMove(alphaBeta(globalDepth, 1000000, -1000000, "", 0));
-            flipBoard();
-            f.repaint();
+       locateKingPositions();
+
+        printBoard(); // Print board state for debugging
+    }
+
+    private static void locateKingPositions() {
+        // Reset positions
+        kingPositionC = kingPositionL = -1;
+        for (int i = 0; i < 64; i++) {
+            if ("A".equals(chessBoard[i / 8][i % 8])) {
+                kingPositionC = i;
+            }
+            if ("a".equals(chessBoard[i / 8][i % 8])) {
+                kingPositionL = i;
+            }
         }
-        
+    }
 
-        for (int i = 0  ; i < 8 ; i++){
+    private static void printBoard() {
+        for (int i = 0; i < 8; i++) {
             System.out.println(Arrays.toString(chessBoard[i]));
         }
     }
